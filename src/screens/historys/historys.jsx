@@ -12,7 +12,6 @@ function Historys() {
   async function LoadHistory() {
     try {
       const response = await api.get("/history");
-      console.log("API Response:", response.data); // Log da resposta da API
 
       if (response.data && response.data.length > 0) {
         const formattedData = response.data.map((item) => {
@@ -31,7 +30,6 @@ function Historys() {
         });
         setHistory(formattedData);
       } else {
-        console.log("No history data available."); // Log para dados vazios
         Alert.alert("No history data available.");
       }
     } catch (error) {
@@ -49,7 +47,6 @@ function Historys() {
   };
 
   useEffect(() => {
-    console.log("History state before loading:", history); // Log do estado inicial
     LoadHistory();
   }, []);
 
