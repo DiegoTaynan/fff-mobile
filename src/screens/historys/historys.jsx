@@ -11,24 +11,31 @@ function Historys() {
   // Função para carregar dados e mapear ícones baseados no serviço
   async function LoadHistory() {
     try {
-      const response = await api.get("/appointments");
+      const response = await api.get("/history");
+      console.log("API Response:", response.data); // Log da resposta da API
 
       if (response.data && response.data.length > 0) {
         const formattedData = response.data.map((item) => {
           const iconKey = formatIconKey(item.service);
           const icon = icons[iconKey] || icons.default;
-          `Service: ${item.service}, Icon Key: ${iconKey}, Icon: ${icon}`;
+
+          // Validação do campo dt_start
+          const isValidDate = !isNaN(new Date(item.dt_start).getTime());
+          const bookingDate = isValidDate ? item.dt_start : "Invalid Date";
+
           return {
             ...item,
-            icone: icon, // Mapeia o ícone ou usa padrão
+            booking_date: bookingDate, // Atualize para booking_date
+            icone: icon,
           };
         });
         setHistory(formattedData);
       } else {
+        console.log("No history data available."); // Log para dados vazios
         Alert.alert("No history data available.");
       }
     } catch (error) {
-      console.error("Error loading history:", error);
+      console.error("Error loading history:", error); // Log do erro
       Alert.alert("An error occurred while fetching the data.");
     }
   }
@@ -42,24 +49,36 @@ function Historys() {
   };
 
   useEffect(() => {
+    console.log("History state before loading:", history); // Log do estado inicial
     LoadHistory();
-  }, []); // Certifique-se de que este efeito execute apenas uma vez após o primeiro render
+  }, []);
 
   return (
     <View style={styles.container}>
       <FlatList
         data={history}
-        keyExtractor={(item) => item.id_appointment.toString()}
+        keyExtractor={(item, index) =>
+          item.id_appointment
+            ? item.id_appointment.toString()
+            : index.toString()
+        }
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => (
-          <History
-            service={item.service}
-            mechanic={item.mechanic}
-            booking_date={item.booking_date}
-            observations={item.observations}
-            icone={item.icone}
-          />
-        )}
+        renderItem={({ item }) => {
+          const isValidDate = !isNaN(new Date(item.booking_date).getTime());
+          const formattedDate = isValidDate
+            ? item.booking_date
+            : "Invalid Date";
+
+          return (
+            <History
+              service={item.service}
+              mechanic={item.mechanic}
+              booking_date={formattedDate}
+              observations={item.observations}
+              icone={item.icone}
+            />
+          );
+        }}
         contentContainerStyle={styles.containerList}
         ListEmptyComponent={() => (
           <View style={styles.empty}>
