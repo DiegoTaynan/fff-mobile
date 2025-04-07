@@ -18,8 +18,6 @@ function AbaReservations() {
   }
 
   async function DeleteAppointments(id_appointment) {
-    console.log("Frontend: Deleting appointment with ID:", id_appointment);
-
     if (!id_appointment) {
       Alert.alert("Error", "Appointment ID is missing.");
       return;
@@ -27,8 +25,6 @@ function AbaReservations() {
 
     try {
       const response = await api.delete("/appointments/" + id_appointment);
-
-      console.log("Frontend: API response for delete:", response.data);
 
       if (response.status === 200) {
         Alert.alert("Success", "Appointment canceled successfully.");
@@ -68,7 +64,6 @@ function AbaReservations() {
           }
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
-            console.log("Frontend: Rendering item:", item);
             return (
               <Appointments
                 id_appointment={item.id_appointment}
