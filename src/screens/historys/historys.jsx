@@ -18,32 +18,28 @@ function Historys() {
           const iconKey = formatIconKey(item.service);
           const icon = icons[iconKey] || icons.default;
 
-          // Validação do campo dt_start
-          const isValidDate = !isNaN(new Date(item.dt_start).getTime());
-          const bookingDate = isValidDate ? item.dt_start : "Invalid Date";
-
           return {
             ...item,
-            booking_date: bookingDate, // Atualize para booking_date
+            booking_date: item.dt_start || "Invalid Date",
             icone: icon,
           };
         });
         setHistory(formattedData);
       } else {
-        Alert.alert("No history data available.");
+        Alert.alert("Nenhum dado de histórico disponível.");
       }
     } catch (error) {
-      console.error("Error loading history:", error); // Log do erro
-      Alert.alert("An error occurred while fetching the data.");
+      console.error("Erro ao carregar o histórico:", error); // Log do erro
+      Alert.alert("Ocorreu um erro ao buscar os dados do histórico.");
     }
   }
 
   // Função para formatar a chave do ícone
   const formatIconKey = (service) => {
     return service
-      .toLowerCase() // Tudo minúsculo
-      .replace(/\s+/g, "_") // Substitui espaços por "_"
-      .replace(/[^\w_]/g, ""); // Remove caracteres não alfanuméricos e preserva "_"
+      .toLowerCase()
+      .replace(/\s+/g, "_")
+      .replace(/[^\w_]/g, "");
   };
 
   useEffect(() => {
@@ -60,27 +56,20 @@ function Historys() {
             : index.toString()
         }
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          const isValidDate = !isNaN(new Date(item.booking_date).getTime());
-          const formattedDate = isValidDate
-            ? item.booking_date
-            : "Invalid Date";
-
-          return (
-            <History
-              service={item.service}
-              mechanic={item.mechanic}
-              booking_date={formattedDate}
-              observations={item.observations}
-              icone={item.icone}
-            />
-          );
-        }}
+        renderItem={({ item }) => (
+          <History
+            service={item.service}
+            mechanic={item.mechanic}
+            booking_date={item.booking_date}
+            observations={item.observations}
+            icone={item.icone}
+          />
+        )}
         contentContainerStyle={styles.containerList}
         ListEmptyComponent={() => (
           <View style={styles.empty}>
             <Image source={icons.empty} />
-            <Text style={styles.emptyText}>No history found</Text>
+            <Text style={styles.emptyText}>Nenhum histórico encontrado</Text>
           </View>
         )}
       />

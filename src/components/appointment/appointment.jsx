@@ -4,6 +4,8 @@ import icons from "../../constants/icons.js";
 import Button from "../../components/button/button.jsx";
 
 function Appointment(props) {
+  console.log("Frontend: Rendering appointment:", props); // 🔥 Log para verificar as props recebidas
+
   const dt = new Date(props.bookingDate + "T" + props.bookingHour);
 
   return (
@@ -30,7 +32,13 @@ function Appointment(props) {
           <Button
             text="Cancel reservation"
             theme="danger"
-            onPress={() => props.onPress(props.id_appointment)}
+            onPress={() => {
+              console.log(
+                "Frontend: Cancel button pressed for ID:",
+                props.id_appointment
+              ); // 🔥 Log para verificar o ID ao pressionar o botão
+              props.onPress(props.id_appointment);
+            }}
           />
         </View>
       </View>
