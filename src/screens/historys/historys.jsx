@@ -8,38 +8,30 @@ import api from "../../constants/api.js";
 function Historys() {
   const [history, setHistory] = useState([]);
 
-  // Função para carregar dados e mapear ícones baseados no serviço
   async function LoadHistory() {
     try {
       const response = await api.get("/history");
 
       if (response.data && response.data.length > 0) {
-        const formattedData = response.data.map((item) => {
-          const iconKey = formatIconKey(item.service);
-          const icon = icons[iconKey] || icons.default;
-
-          return {
-            ...item,
-            booking_date: item.dt_start || "Invalid Date",
-            icone: icon,
-          };
-        });
+        const formattedData = response.data.map((item) => ({
+          ...item,
+          booking_date: validateDate(item.booking_date), // Valida a data
+          icone: icons[item.icons] || icons.default, // Usa o campo 'icons' retornado pelo backend
+        }));
         setHistory(formattedData);
       } else {
-        Alert.alert("Nenhum dado de histórico disponível.");
+        Alert.alert("No history data available.");
       }
     } catch (error) {
-      console.error("Erro ao carregar o histórico:", error); // Log do erro
-      Alert.alert("Ocorreu um erro ao buscar os dados do histórico.");
+      console.error("Error loading history:", error); // Log do erro
+      Alert.alert("An error occurred while fetching the data.");
     }
   }
 
-  // Função para formatar a chave do ícone
-  const formatIconKey = (service) => {
-    return service
-      .toLowerCase()
-      .replace(/\s+/g, "_")
-      .replace(/[^\w_]/g, "");
+  // Função para validar a data
+  const validateDate = (dateString) => {
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? "Invalid Date" : dateString;
   };
 
   useEffect(() => {
@@ -69,7 +61,7 @@ function Historys() {
         ListEmptyComponent={() => (
           <View style={styles.empty}>
             <Image source={icons.empty} />
-            <Text style={styles.emptyText}>Nenhum histórico encontrado</Text>
+            <Text style={styles.emptyText}>No history found</Text>
           </View>
         )}
       />

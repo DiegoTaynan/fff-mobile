@@ -18,7 +18,8 @@ function Trackers() {
         const formattedData = response.data.map((item, index) => ({
           ...item,
           id: item.id || `${item.service}_${index}`,
-          icone: icons[formatIconKey(item.service)] || icons.default,
+          icone: icons[item.icons] || icons.default, // Usa o campo 'icons' retornado pelo backend
+          booking_hour: item.booking_hour || "N/A", // Certifique-se de que o campo booking_hour está presente
         }));
         setTracker(formattedData);
       }
@@ -27,13 +28,6 @@ function Trackers() {
       Alert.alert("An error has occurred. Please try again later.");
     }
   }
-
-  const formatIconKey = (service) => {
-    return service
-      .toLowerCase()
-      .replace(/\s+/g, "_")
-      .replace(/[^\w_]/g, "");
-  };
 
   useEffect(() => {
     LoadTracker();
@@ -50,6 +44,7 @@ function Trackers() {
             service={item.service}
             status={item.status}
             dt_start={item.dt_start}
+            booking_hour={item.booking_hour} // Certifique-se de passar o campo booking_hour
             icone={item.icone}
           />
         )}

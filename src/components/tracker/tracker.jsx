@@ -2,18 +2,17 @@ import { View, Image, Text } from "react-native";
 import { styles } from "./tracker.style.js";
 
 function Tracker(props) {
-  // Função para formatar a data
-  const formatDateTime = (dateString) => {
+  const formatDateTime = (dateString, timeString) => {
     const date = new Date(dateString);
     const options = {
       year: "numeric",
       month: "2-digit",
       day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
     };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
+    const formattedDate = new Intl.DateTimeFormat("en-US", options).format(
+      date
+    );
+    return `${formattedDate} ${timeString || ""}`; // Combina a data e a hora
   };
 
   const statusText =
@@ -30,7 +29,9 @@ function Tracker(props) {
         <Text style={styles.service}>{props.service}</Text>
         <View style={styles.container}>
           <Text style={styles.status}>{statusText}</Text>
-          <Text style={styles.date}>{formatDateTime(props.dt_start)}</Text>
+          <Text style={styles.date}>
+            {formatDateTime(props.dt_start, props.booking_hour)}
+          </Text>
         </View>
       </View>
     </View>

@@ -3,6 +3,9 @@ import { styles } from "./history.style.js";
 
 function History(props) {
   const formatDate = (dateString) => {
+    if (dateString === "Invalid Date") {
+      return dateString; // Retorna "Invalid Date" diretamente
+    }
     const date = new Date(dateString);
     const options = {
       year: "numeric",
