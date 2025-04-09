@@ -12,7 +12,11 @@ function Historys() {
     try {
       const response = await api.get("/history");
 
-      if (response.data && response.data.length > 0) {
+      if (
+        response.data &&
+        Array.isArray(response.data) &&
+        response.data.length > 0
+      ) {
         const formattedData = response.data.map((item) => ({
           ...item,
           booking_date: validateDate(item.booking_date), // Valida a data
@@ -20,6 +24,7 @@ function Historys() {
         }));
         setHistory(formattedData);
       } else {
+        setHistory([]); // Ensure state is updated with an empty array
         Alert.alert("No history data available.");
       }
     } catch (error) {

@@ -12,8 +12,6 @@ function Trackers() {
     try {
       const response = await api.get("/tracker");
 
-      console.log("Frontend: API response for trackers:", response.data); // 🔥 Log para verificar os dados retornados
-
       if (response.data) {
         const formattedData = response.data.map((item, index) => ({
           ...item,
