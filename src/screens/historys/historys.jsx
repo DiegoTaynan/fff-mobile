@@ -17,11 +17,20 @@ function Historys() {
         Array.isArray(response.data) &&
         response.data.length > 0
       ) {
-        const formattedData = response.data.map((item) => ({
-          ...item,
-          booking_date: validateDate(item.dt_start), // Atualizado para usar dt_start
-          icone: icons[item.icons] || icons.default, // Usa o campo 'icons' retornado pelo backend
-        }));
+        const formattedData = await Promise.all(
+          response.data.map(async (item) => {
+            const imagesResponse = await api.get(
+              `/appointments/${item.id_appointment}/images`
+            );
+            const images = imagesResponse.data || [];
+            return {
+              ...item,
+              booking_date: validateDate(item.dt_start), // Atualizado para usar dt_start
+              icone: icons[item.icons] || icons.default, // Usa o campo 'icons' retornado pelo backend
+              images: images.map((img) => img.image_url), // Inclui as URLs das imagens
+            };
+          })
+        );
         setHistory(formattedData);
       } else {
         setHistory([]); // Atualiza o estado com um array vazio
@@ -58,6 +67,8 @@ function Historys() {
             booking_date={item.booking_date}
             observations={item.observations}
             icone={item.icone}
+            id_appointment={item.id_appointment} // Passa o id_appointment para o componente History
+            images={item.images || []} // Passa as URLs das imagens diretamente
           />
         )}
         contentContainerStyle={styles.containerList}
