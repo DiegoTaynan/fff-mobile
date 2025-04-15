@@ -19,12 +19,12 @@ function Historys() {
       ) {
         const formattedData = response.data.map((item) => ({
           ...item,
-          booking_date: validateDate(item.booking_date), // Valida a data
+          booking_date: validateDate(item.dt_start), // Atualizado para usar dt_start
           icone: icons[item.icons] || icons.default, // Usa o campo 'icons' retornado pelo backend
         }));
         setHistory(formattedData);
       } else {
-        setHistory([]); // Ensure state is updated with an empty array
+        setHistory([]); // Atualiza o estado com um array vazio
         Alert.alert("No history data available.");
       }
     } catch (error) {
@@ -48,15 +48,13 @@ function Historys() {
       <FlatList
         data={history}
         keyExtractor={(item, index) =>
-          item.id_appointment
-            ? item.id_appointment.toString()
-            : index.toString()
+          item.id_history ? item.id_history.toString() : index.toString()
         }
         showsVerticalScrollIndicator={false}
         renderItem={({ item }) => (
           <History
             service={item.service}
-            mechanic={item.mechanic}
+            mechanic={item.mechanic || "N/A"} // Adiciona fallback para mechanic
             booking_date={item.booking_date}
             observations={item.observations}
             icone={item.icone}
