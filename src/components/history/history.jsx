@@ -1,5 +1,6 @@
 import { View, Image, Text } from "react-native";
 import { styles } from "./history.style.js";
+import Button from "../button/button.jsx";
 
 function History(props) {
   const formatDate = (dateString) => {
@@ -20,9 +21,17 @@ function History(props) {
       <Image source={props.icone} style={styles.icone} />
       <View style={styles.textos}>
         <Text style={styles.service}>{props.service}</Text>
-        <Text style={styles.mechanic}>Mechanic: {props.mechanic}</Text>
-
-        <View style={styles.container}>
+        <View style={styles.row}>
+          <Text style={styles.mechanic}>Mechanic: {props.mechanic}</Text>
+          <View style={styles.containerButton}>
+            <Button
+              text="Attach"
+              theme="danger"
+              onPress={() => console.log("Attach pressed")}
+            />
+          </View>
+        </View>
+        <View style={styles.row}>
           <Text style={styles.date}>
             Date: {formatDate(props.booking_date)}
           </Text>

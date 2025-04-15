@@ -23,7 +23,7 @@ export const styles = {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    alignItems: "flex-start", // Alinha o texto ao topo
+    alignItems: "center", // Aligns "Date" and "Attach" button vertically
   },
   service: {
     fontSize: FONT_SIZE.md,
@@ -54,10 +54,31 @@ export const styles = {
   },
   comments: {
     fontSize: FONT_SIZE.sm,
+    flex: 1, // Ensures text takes available space
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  containerButton: {
+    width: "30%", // Restricts the button width to 30% for better structure
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8, // Adds spacing between the button and the text
+    position: "absolute", // Positions the button independently
+    right: 0, // Aligns the button to the right edge
   },
   observations: {
     fontSize: FONT_SIZE.sm,
     color: COLORS.gray2,
     marginTop: 4,
+  },
+  observationsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 8,
   },
 };
