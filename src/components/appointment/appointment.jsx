@@ -30,7 +30,9 @@ function Appointment(props) {
           <Button
             text="Cancel reservation"
             theme="danger"
-            onPress={() => props.onPress(props.id_appointment)}
+            onPress={() => {
+              props.onPress(props.id_appointment);
+            }}
           />
         </View>
       </View>

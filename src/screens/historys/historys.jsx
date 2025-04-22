@@ -8,28 +8,32 @@ import api from "../../constants/api.js";
 function Historys() {
   const [history, setHistory] = useState([]);
 
-  // Função para carregar dados e mapear ícones baseados no serviço
   async function LoadHistory() {
     try {
       const response = await api.get("/history");
 
-      if (response.data && response.data.length > 0) {
-        const formattedData = response.data.map((item) => {
-          const iconKey = formatIconKey(item.service);
-          const icon = icons[iconKey] || icons.default;
-
-          // Validação do campo dt_start
-          const isValidDate = !isNaN(new Date(item.dt_start).getTime());
-          const bookingDate = isValidDate ? item.dt_start : "Invalid Date";
-
-          return {
-            ...item,
-            booking_date: bookingDate, // Atualize para booking_date
-            icone: icon,
-          };
-        });
+      if (
+        response.data &&
+        Array.isArray(response.data) &&
+        response.data.length > 0
+      ) {
+        const formattedData = await Promise.all(
+          response.data.map(async (item) => {
+            const imagesResponse = await api.get(
+              `/appointments/${item.id_appointment}/images`
+            );
+            const images = imagesResponse.data || [];
+            return {
+              ...item,
+              booking_date: validateDate(item.dt_start), // Atualizado para usar dt_start
+              icone: icons[item.icons] || icons.default, // Usa o campo 'icons' retornado pelo backend
+              images: images.map((img) => img.image_url), // Inclui as URLs das imagens
+            };
+          })
+        );
         setHistory(formattedData);
       } else {
+        setHistory([]); // Atualiza o estado com um array vazio
         Alert.alert("No history data available.");
       }
     } catch (error) {
@@ -38,12 +42,10 @@ function Historys() {
     }
   }
 
-  // Função para formatar a chave do ícone
-  const formatIconKey = (service) => {
-    return service
-      .toLowerCase() // Tudo minúsculo
-      .replace(/\s+/g, "_") // Substitui espaços por "_"
-      .replace(/[^\w_]/g, ""); // Remove caracteres não alfanuméricos e preserva "_"
+  // Função para validar a data
+  const validateDate = (dateString) => {
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? "Invalid Date" : dateString;
   };
 
   useEffect(() => {
@@ -55,27 +57,20 @@ function Historys() {
       <FlatList
         data={history}
         keyExtractor={(item, index) =>
-          item.id_appointment
-            ? item.id_appointment.toString()
-            : index.toString()
+          item.id_history ? item.id_history.toString() : index.toString()
         }
         showsVerticalScrollIndicator={false}
-        renderItem={({ item }) => {
-          const isValidDate = !isNaN(new Date(item.booking_date).getTime());
-          const formattedDate = isValidDate
-            ? item.booking_date
-            : "Invalid Date";
-
-          return (
-            <History
-              service={item.service}
-              mechanic={item.mechanic}
-              booking_date={formattedDate}
-              observations={item.observations}
-              icone={item.icone}
-            />
-          );
-        }}
+        renderItem={({ item }) => (
+          <History
+            service={item.service}
+            mechanic={item.mechanic || "N/A"} // Adiciona fallback para mechanic
+            booking_date={item.booking_date}
+            observations={item.observations}
+            icone={item.icone}
+            id_appointment={item.id_appointment} // Passa o id_appointment para o componente History
+            images={item.images || []} // Passa as URLs das imagens diretamente
+          />
+        )}
         contentContainerStyle={styles.containerList}
         ListEmptyComponent={() => (
           <View style={styles.empty}>

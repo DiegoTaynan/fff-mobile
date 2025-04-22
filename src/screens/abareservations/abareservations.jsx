@@ -1,6 +1,5 @@
 import { Alert, FlatList, View, Text } from "react-native";
 import { styles } from "./abareservations.style.js";
-//import { appointments } from "../../constants/dados.js";
 import Appointments from "../../components/appointment/appointment.jsx";
 import { useEffect, useState } from "react";
 import api from "../../constants/api.js";
@@ -11,26 +10,42 @@ function AbaReservations() {
   async function LoadAppointments() {
     try {
       const response = await api.get("/appointments");
+      setAppointments(response.data);
+    } catch (error) {
+      console.error("Error loading appointments:", error);
+      Alert.alert("Error", "Failed to load appointments.");
+    }
+  }
 
-      if (response.data) {
-        // Verifica se a resposta contém a lista de agendamentos
-        setAppointments(response.data.appointments || response.data);
+  async function DeleteAppointments(id_appointment) {
+    if (!id_appointment) {
+      Alert.alert("Error", "Appointment ID is missing.");
+      return;
+    }
+
+    try {
+      const response = await api.delete("/appointments/" + id_appointment);
+
+      if (response.status === 200) {
+        Alert.alert("Success", "Appointment canceled successfully.");
+        LoadAppointments();
       }
     } catch (error) {
+      console.error("Frontend: Error deleting appointment:", error);
       if (error.response?.data.error) Alert.alert(error.response.data.error);
       else Alert.alert("An error has occurred. Please try again later.");
     }
   }
 
-  async function DeleteAppointments(id_appointment) {
-    try {
-      const response = await api.delete("/appointments/" + id_appointment);
-
-      if (response.data?.id_appointment) LoadAppointments();
-    } catch (error) {
-      if (error.response?.data.error) Alert.alert(error.response.data.error);
-      else Alert.alert("An error has occurred. Please try again later.");
-    }
+  function ConfirmDelete(id_appointment) {
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to cancel this appointment?",
+      [
+        { text: "No", style: "cancel" },
+        { text: "Yes", onPress: () => DeleteAppointments(id_appointment) },
+      ]
+    );
   }
 
   useEffect(() => {
@@ -40,11 +55,13 @@ function AbaReservations() {
   return (
     <View style={styles.container}>
       {appointments.length === 0 ? (
-        <Text>Nenhum agendamento encontrado</Text>
+        <Text>No appointments found</Text>
       ) : (
         <FlatList
           data={appointments}
-          keyExtractor={(appoint) => appoint.id_appointment.toString()}
+          keyExtractor={(appoint, index) =>
+            appoint.id_appointment?.toString() || index.toString()
+          }
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => {
             return (
@@ -53,9 +70,9 @@ function AbaReservations() {
                 service={item.service}
                 mechanic={item.mechanic}
                 specialty={item.specialty}
-                bookingDate={item.booking_date}
-                bookingHour={item.booking_hour}
-                onPress={DeleteAppointments}
+                bookingDate={item.date}
+                bookingHour={item.hour}
+                onPress={ConfirmDelete}
               />
             );
           }}
