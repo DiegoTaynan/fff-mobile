@@ -1,21 +1,27 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-async function SaveUsuario(user) {
+export async function SaveUsuario(usuario) {
   try {
-    await AsyncStorage.setItem("usuario", JSON.stringify(user));
+    await AsyncStorage.setItem("@usuario", JSON.stringify(usuario));
   } catch (error) {
-    console.log("Erro ao salvar storage");
+    console.error("Erro ao salvar usuário:", error);
   }
 }
 
-async function LoadUsuario() {
+export async function LoadUsuario() {
   try {
-    const storage = await AsyncStorage.getItem("usuario");
-
-    return storage ? JSON.parse(storage) : {};
+    const usuario = await AsyncStorage.getItem("@usuario");
+    return usuario ? JSON.parse(usuario) : null;
   } catch (error) {
-    console.log("Erro ao carregar storage");
+    console.error("Erro ao carregar usuário:", error);
+    return null;
   }
 }
 
-export { SaveUsuario, LoadUsuario };
+export async function RemoveUsuario() {
+  try {
+    await AsyncStorage.removeItem("@usuario");
+  } catch (error) {
+    console.error("Erro ao remover usuário:", error);
+  }
+}

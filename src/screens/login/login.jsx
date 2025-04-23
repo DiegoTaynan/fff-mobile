@@ -22,30 +22,41 @@ function Login(props) {
         password,
       });
 
-      if (response.data) {
-        api.defaults.headers.common["Authorization"] =
-          "Bearer " + response.data.token;
-        setUser(response.data);
-      }
+      const token = response.data.token; // Use o token retornado pela API
+      if (token) {
+        api.defaults.headers.common["Authorization"] = "Bearer " + token;
+        setUser({ ...response.data, token });
 
-      //Salvar dados do usuario no storage local
-      SaveUsuario(response.data);
+        // Salvar dados do usuário no storage local
+        await SaveUsuario({ ...response.data, token });
+      } else {
+        Alert.alert(
+          "Login failed",
+          "Token not found in the server response. Please contact support."
+        );
+      }
     } catch (error) {
-      setLoading(false);
       await SaveUsuario({});
       if (error.response?.data.error) Alert.alert(error.response.data.error);
       else Alert.alert("An error has occurred. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function CarregarDados() {
     try {
       const usuario = await LoadUsuario();
-      if (usuario.token)
+      if (usuario.token) {
         api.defaults.headers.common["Authorization"] =
-          "Bearer " + response.data.token;
-      setUser(usuario);
-    } catch (error) {}
+          "Bearer " + usuario.token;
+        setUser(usuario);
+      } else {
+        setUser(null); // Certifique-se de limpar o estado se o token não for válido
+      }
+    } catch (error) {
+      setUser(null); // Certifique-se de limpar o estado em caso de erro
+    }
   }
 
   useEffect(() => {
