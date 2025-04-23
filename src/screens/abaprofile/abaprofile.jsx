@@ -4,8 +4,11 @@ import api from "../../constants/api.js";
 import { useContext, useEffect, useState } from "react";
 import Button from "../../components/button/button.jsx";
 import { AuthContext } from "../../contexts/auth.js";
+import { useNavigation } from "@react-navigation/native";
+import { RemoveUsuario } from "../../storage/storage.usuario.js"; // Importe a função para remover o usuário do storage
 
 function AbaProfile() {
+  const navigation = useNavigation();
   const { setUser } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -38,7 +41,8 @@ function AbaProfile() {
 
   function Logout() {
     api.defaults.headers.common["Authorization"] = "";
-    setUser({});
+    setUser(null); // Limpa o estado do usuário
+    RemoveUsuario(); // Limpa o armazenamento local
   }
 
   useEffect(() => {

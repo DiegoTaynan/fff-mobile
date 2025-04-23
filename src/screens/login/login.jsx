@@ -51,9 +51,11 @@ function Login(props) {
         api.defaults.headers.common["Authorization"] =
           "Bearer " + usuario.token;
         setUser(usuario);
+      } else {
+        setUser(null); // Certifique-se de limpar o estado se o token não for válido
       }
     } catch (error) {
-      // Handle error silently
+      setUser(null); // Certifique-se de limpar o estado em caso de erro
     }
   }
 
