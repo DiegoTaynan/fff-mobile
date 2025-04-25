@@ -15,6 +15,8 @@ function Login(props) {
   const [loading, setLoading] = useState(false);
 
   async function ProcessarLogin() {
+    console.log("Iniciando login com os dados:", { email, password });
+
     try {
       setLoading(true);
       const response = await api.post("/users/login", {
@@ -22,39 +24,59 @@ function Login(props) {
         password,
       });
 
+      console.log("Resposta do servidor:", response.data);
+
       const token = response.data.token; // Use o token retornado pela API
       if (token) {
+        console.log("Token recebido:", token);
         api.defaults.headers.common["Authorization"] = "Bearer " + token;
         setUser({ ...response.data, token });
 
         // Salvar dados do usuário no storage local
         await SaveUsuario({ ...response.data, token });
+        console.log("Usuário salvo no storage local.");
       } else {
+        console.error("Token não encontrado na resposta do servidor.");
         Alert.alert(
           "Login failed",
           "Token not found in the server response. Please contact support."
         );
       }
     } catch (error) {
+      console.error("Erro durante o login:", error);
+
       await SaveUsuario({});
-      if (error.response?.data.error) Alert.alert(error.response.data.error);
-      else Alert.alert("An error has occurred. Please try again later.");
+      if (error.response?.data.error) {
+        console.error(
+          "Erro retornado pelo servidor:",
+          error.response.data.error
+        );
+        Alert.alert(error.response.data.error);
+      } else {
+        console.error("Erro inesperado:", error.message);
+        Alert.alert("An error has occurred. Please try again later.");
+      }
     } finally {
       setLoading(false);
+      console.log("Processo de login finalizado.");
     }
   }
 
   async function CarregarDados() {
+    console.log("Carregando dados do usuário do storage local...");
     try {
       const usuario = await LoadUsuario();
       if (usuario.token) {
+        console.log("Usuário encontrado no storage local:", usuario);
         api.defaults.headers.common["Authorization"] =
           "Bearer " + usuario.token;
         setUser(usuario);
       } else {
+        console.log("Nenhum usuário encontrado no storage local.");
         setUser(null); // Certifique-se de limpar o estado se o token não for válido
       }
     } catch (error) {
+      console.error("Erro ao carregar dados do usuário:", error);
       setUser(null); // Certifique-se de limpar o estado em caso de erro
     }
   }
