@@ -4,8 +4,8 @@
       "android": {
         "buildType": "apk",
         "extra": {
-          "networkSecurityConfigPath": "src/main/res/xml/network_security_config.xml"
-        }
+          "networkSecurityConfigPath": "assets/android/res/xml/network_security_config.xml"
+        
       }
     },
     "preview2": {
