@@ -2,10 +2,7 @@
   "build": {
     "preview": {
       "android": {
-        "buildType": "apk",
-        "extra": {
-          "networkSecurityConfigPath": "src/main/res/xml/network_security_config.xml"
-        }
+        "buildType": "apk"
       }
     },
     "preview2": {
