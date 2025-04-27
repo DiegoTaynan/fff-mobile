@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://familyfriendsadmin.com:3001", // Usando HTTP
+  baseURL: "https://familyfriendsadmin.com:3002", // Usando HTTP
 });
 
 // Interceptores para debugging
