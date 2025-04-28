@@ -4,21 +4,5 @@ const api = axios.create({
   baseURL: "https://familyfriendsadmin.com:3002", // Usando HTTP
 });
 
-// Interceptores para debugging
-api.interceptors.request.use((config) => {
-  console.log("Iniciando requisição:", config);
-  return config;
-});
-
-api.interceptors.response.use(
-  (response) => {
-    console.log("Resposta recebida:", response);
-    return response;
-  },
-  (error) => {
-    console.error("Erro na resposta:", error);
-    return Promise.reject(error);
-  }
-);
-
+console.log("API carregada com sucesso");
 export default api;

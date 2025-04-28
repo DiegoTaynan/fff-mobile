@@ -5,9 +5,7 @@ import { styles } from "./imageViewer.style.js";
 function ImageViewer({ images, onClose }) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  useEffect(() => {
-    console.log("Imagens recebidas:", images); // Log para verificar as imagens recebidas
-  }, [images]);
+  useEffect(() => {}, [images]);
 
   const handleNext = () => {
     if (currentIndex < images.length - 1) {

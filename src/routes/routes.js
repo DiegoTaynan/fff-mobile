@@ -5,6 +5,7 @@ import { ActivityIndicator, View } from "react-native";
 
 import { AuthContext } from "../contexts/auth.js";
 import { LoadUsuario } from "../storage/storage.usuario.js";
+import api from "../constants/api.js"; // Adicione esta linha
 
 function Routes() {
   const { user, setUser } = useContext(AuthContext);

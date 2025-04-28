@@ -13,6 +13,7 @@ function TextBox(props) {
         onChangeText={(texto) => props.onChangeText(texto)}
         value={props.value}
         returnKeyType={props.returnKeyType ? props.returnKeyType : "default"}
+        autoCapitalize={props.autoCapitalize || "sentences"} // Adicionado para suportar autoCapitalize
         onSubmitEditing={(value) =>
           props.onSubmit && props.onSubmit(value.nativeEvent.text)
         }
