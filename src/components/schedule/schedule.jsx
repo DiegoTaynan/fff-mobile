@@ -38,12 +38,19 @@ function Schedule(props) {
     const hours = [];
     let startHour, endHour;
 
-    if (isWeekend(date)) {
+    // Garantir que a data seja um objeto Date válido
+    const parsedDate = new Date(date);
+
+    if (isNaN(parsedDate)) {
+      return hours; // Retorna vazio se a data for inválida
+    }
+
+    if (isWeekend(parsedDate)) {
       return hours; // No availability on Sunday
-    } else if (isSaturday(date)) {
+    } else if (isSaturday(parsedDate)) {
       startHour = 8; // Saturday: from 08:00 to 16:00
       endHour = 16;
-    } else if (isWeekday(date)) {
+    } else if (isWeekday(parsedDate)) {
       startHour = 8; // Weekdays: from 08:00 to 18:00
       endHour = 18;
     }
@@ -59,8 +66,10 @@ function Schedule(props) {
     return hours;
   };
 
+  // Garantir que a data seja passada no formato correto ao gerar horários
   useEffect(() => {
-    setAvailableHours(generateAvailableHours(selectedDate));
+    const formattedDate = new Date(selectedDate).toISOString().slice(0, 10);
+    setAvailableHours(generateAvailableHours(formattedDate));
   }, [selectedDate]);
 
   useEffect(() => {
@@ -76,6 +85,13 @@ function Schedule(props) {
 
     fetchServices();
   }, []);
+
+  // Atualizar o estado de selectedHour para garantir que ele tenha um valor padrão válido
+  useEffect(() => {
+    if (availableHours.length > 0 && !availableHours.includes(selectedHour)) {
+      setSelectedHour(availableHours[0]); // Define o primeiro horário disponível como padrão
+    }
+  }, [availableHours]);
 
   // Filtrar serviços para remover os serviços já selecionados
   const filteredServices = services.filter(
@@ -130,9 +146,13 @@ function Schedule(props) {
               setSelectedHour(itemValue);
             }}
           >
-            {availableHours.map((hour, index) => (
-              <Picker.Item key={index} label={hour} value={hour} />
-            ))}
+            {availableHours.length > 0 ? (
+              availableHours.map((hour, index) => (
+                <Picker.Item key={index} label={hour} value={hour} />
+              ))
+            ) : (
+              <Picker.Item label="No available hours" value="" />
+            )}
           </Picker>
         </View>
       </View>

@@ -26,6 +26,7 @@ export const styles = {
     maxWidth: "25%",
     alignItems: "center",
     justifyContent: "center",
+    flexShrink: 1, // Prevents text overflow by shrinking the container if needed
   },
   service: {
     fontSize: FONT_SIZE.xl,
