@@ -15,7 +15,9 @@ function Button(props) {
       {props.isLoading ? (
         <ActivityIndicator color={styles.loadingColor} />
       ) : (
-        <Text style={styles.text}>{props.text}</Text>
+        <Text style={styles.text}>
+          {props.text}
+        </Text>
       )}
     </TouchableOpacity>
   );

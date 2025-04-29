@@ -1,4 +1,8 @@
-import { COLORS, FONT_SIZE } from "../../constants/theme.js";
+import { COLORS, FONT_SIZE, scaleFactor } from "../../constants/theme.js"; // Importando scaleFactor para consistência
+import { Dimensions } from "react-native";
+
+const { width } = Dimensions.get("window");
+const isSmallScreen = width <= 360; // Detecta se a tela é pequena
 
 export const styles = {
   btn: {
@@ -14,8 +18,12 @@ export const styles = {
   },
   text: {
     color: "#fff",
-    fontSize: FONT_SIZE.md,
+    fontSize: FONT_SIZE.md * scaleFactor, // Aplicado o scaleFactor para ajustar dinamicamente o tamanho da fonte
     textAlign: "center",
+    display: "flex", // Garante o uso de flexbox
+    justifyContent: "center", // Centraliza o texto verticalmente
+    alignItems: "center", // Centraliza horizontalmente
+    paddingVertical: 0, // Remove qualquer padding vertical
   },
   loading: {
     opacity: 0.5,

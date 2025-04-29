@@ -38,6 +38,8 @@ export const styles = {
     fontSize: FONT_SIZE.sm,
     color: COLORS.gray3,
     marginTop: 3,
+    maxWidth: "80%", // Limita a largura máxima do texto
+    flexWrap: "wrap", // Permite quebras de linha automáticas
   },
   icone: {
     width: 50,
