@@ -1,4 +1,4 @@
-import { Alert, View, Text } from "react-native";
+import { Alert, View, Text, ScrollView } from "react-native";
 import { styles } from "./abaprofile.style.js";
 import api from "../../constants/api.js";
 import { useContext, useEffect, useState } from "react";
@@ -43,6 +43,38 @@ function AbaProfile() {
     api.defaults.headers.common["Authorization"] = "";
     setUser(null); // Limpa o estado do usuário
     RemoveUsuario(); // Limpa o armazenamento local
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "main" }], // Redireciona para a tela principal
+    });
+  }
+
+  async function DeleteProfile() {
+    Alert.alert(
+      "Confirm Deletion",
+      "Are you sure you want to delete your profile? All your data will be permanently deleted.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await api.delete("/users/profile");
+              Alert.alert("Profile deleted successfully.");
+              Logout(); // Reutiliza a função de logout para limpar o estado e redirecionar
+            } catch (error) {
+              if (error.response?.data.error)
+                Alert.alert(error.response.data.error);
+              else Alert.alert("An error occurred. Please try again later.");
+            }
+          },
+        },
+      ]
+    );
   }
 
   useEffect(() => {
@@ -50,7 +82,7 @@ function AbaProfile() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.item}>
         <Text style={styles.title}>Nome</Text>
         <Text style={styles.text}>{name}</Text>
@@ -86,7 +118,10 @@ function AbaProfile() {
       <View style={styles.item}>
         <Button text="Disconnect" theme="danger" onPress={Logout} />
       </View>
-    </View>
+      <View style={styles.item}>
+        <Button text="Delete Profile" onPress={DeleteProfile} />
+      </View>
+    </ScrollView>
   );
 }
 

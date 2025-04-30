@@ -8,8 +8,6 @@ import api from "../../constants/api.js";
 import { SaveUsuario, LoadUsuario } from "../../storage/storage.usuario.js";
 import { AuthContext } from "../../contexts/auth.js";
 
-console.log("API está disponível login:", api);
-
 function Login(props) {
   const { setUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
@@ -17,11 +15,6 @@ function Login(props) {
   const [loading, setLoading] = useState(false);
 
   async function ProcessarLogin() {
-    if (!email.trim() || !password.trim()) {
-      Alert.alert("Validation Error", "Please fill in both email and password.");
-      return;
-    }
-
     try {
       setLoading(true);
       const response = await api.post("/users/login", {
@@ -44,11 +37,8 @@ function Login(props) {
       }
     } catch (error) {
       await SaveUsuario({});
-      if (error.response?.data.error) {
-        Alert.alert(error.response.data.error);
-      } else {
-        Alert.alert("An error has occurred. Please try again later.");
-      }
+      if (error.response?.data.error) Alert.alert(error.response.data.error);
+      else Alert.alert("An error has occurred. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -76,15 +66,16 @@ function Login(props) {
   return (
     <View style={styles.container}>
       <Header texto="Access your account" />
+
       <View style={styles.formGroup}>
         <View style={styles.form}>
           <TextBox
             label="E-mail"
             onChangeText={(texto) => setEmail(texto)}
             value={email}
-            autoCapitalize="none" // Garantido que a primeira letra não será maiúscula
           />
         </View>
+
         <View style={styles.form}>
           <TextBox
             label="Password"
@@ -93,6 +84,7 @@ function Login(props) {
             value={password}
           />
         </View>
+
         <View style={styles.form}>
           <Button
             text="Access"
