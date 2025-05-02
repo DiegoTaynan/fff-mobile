@@ -13,5 +13,4 @@ api.interceptors.request.use(async (config) => {
   return config;
 });
 
-console.log("API carregada com sucesso");
 export default api;

@@ -40,24 +40,24 @@ function AbaProfile() {
   }
 
   function Logout() {
-    api.defaults.headers.common["Authorization"] = ""; // Remove o token do cabeçalho
-    RemoveUsuario(); // Remove o usuário do AsyncStorage
-    setUser(null); // Redefine o estado do usuário
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "main" }], // Redireciona para a tela 'main'
+    api.defaults.headers.common["Authorization"] = "";
+    RemoveUsuario().then(() => {
+      setUser(null);
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "main" }],
+      });
     });
   }
 
   useEffect(() => {
-    console.log("User context:", user); // Log para verificar o estado do usuário
     if (user) {
       LoadProfile();
     }
   }, [user]);
 
   if (loadingAuth) {
-    return <Text>Loading...</Text>; // Exibe um indicador de carregamento enquanto o estado de autenticação é carregado
+    return <Text>Loading...</Text>;
   }
 
   return (

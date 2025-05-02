@@ -20,7 +20,11 @@ export async function LoadUsuario() {
 
 export async function RemoveUsuario() {
   try {
-    await AsyncStorage.removeItem("@usuario"); // Remove o item do armazenamento
+    await AsyncStorage.removeItem("@usuario");
+    const checkUser = await AsyncStorage.getItem("@usuario");
+    if (checkUser) {
+      console.error("Erro: Usuário ainda presente no AsyncStorage.");
+    }
   } catch (error) {
     console.error("Erro ao remover usuário:", error);
   }

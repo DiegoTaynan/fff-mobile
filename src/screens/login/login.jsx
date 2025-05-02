@@ -27,34 +27,17 @@ function Login(props) {
         password,
       });
 
-      const token = response.data.token; // Use o token retornado pela API
+      const token = response.data.token;
       if (token) {
         api.defaults.headers.common["Authorization"] = "Bearer " + token;
         const userData = { ...response.data, token };
-        await SaveUsuario(userData); // Salvar dados do usuário no storage local
-        setUser(userData); // Atualizar o estado do usuário
+        await SaveUsuario(userData);
+        setUser(userData);
 
-        // Verifica se há uma tela de redirecionamento
-        const redirectTo = props.route.params?.redirectTo;
-        const redirectParams = props.route.params?.params;
-
-        if (redirectTo) {
-          props.navigation.reset({
-            index: 0,
-            routes: [
-              {
-                name: redirectTo,
-                params: redirectParams,
-              },
-            ],
-          });
-        } else {
-          // Redirecionar para a tela 'main' por padrão
-          props.navigation.reset({
-            index: 0,
-            routes: [{ name: "main" }],
-          });
-        }
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "main" }],
+        });
       } else {
         Alert.alert(
           "Login failed",
@@ -80,23 +63,21 @@ function Login(props) {
     try {
       const usuario = await LoadUsuario();
       if (usuario?.token) {
-        // Verifica se o token é válido
         api.defaults.headers.common["Authorization"] =
           "Bearer " + usuario.token;
-        const response = await api.get("/users/profile"); // Testa o token
+        const response = await api.get("/users/profile");
         if (response.data) {
-          setUser(usuario); // Define o usuário se o token for válido
+          setUser(usuario);
           props.navigation.reset({
             index: 0,
             routes: [{ name: "main" }],
           });
         }
       } else {
-        setUser(null); // Limpa o estado se o token não for válido
+        setUser(null);
       }
     } catch (error) {
-      console.error("Erro ao carregar dados do usuário:", error);
-      setUser(null); // Limpa o estado em caso de erro
+      setUser(null);
     }
   }
 

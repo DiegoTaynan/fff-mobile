@@ -4,16 +4,18 @@ import { LoadUsuario } from "../storage/storage.usuario.js";
 const AuthContext = createContext({});
 
 function AuthProvider(props) {
-  const [user, setUser] = useState(null); // Permitir que o estado do usuário seja nulo
-  const [loadingAuth, setLoadingAuth] = useState(true); // Adicionar estado de carregamento
+  const [user, setUser] = useState(null);
+  const [loadingAuth, setLoadingAuth] = useState(true);
 
   useEffect(() => {
     async function loadStoredUser() {
       const storedUser = await LoadUsuario();
       if (storedUser) {
         setUser(storedUser);
+      } else {
+        setUser(null);
       }
-      setLoadingAuth(false); // Finalizar o carregamento
+      setLoadingAuth(false);
     }
 
     loadStoredUser();
