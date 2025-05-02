@@ -15,6 +15,11 @@ function Login(props) {
   const [loading, setLoading] = useState(false);
 
   async function ProcessarLogin() {
+    if (!email || !password) {
+      Alert.alert("Error", "Email and password are required.");
+      return;
+    }
+
     try {
       setLoading(true);
       const response = await api.post("/users/login", {
@@ -22,13 +27,17 @@ function Login(props) {
         password,
       });
 
-      const token = response.data.token; // Use o token retornado pela API
+      const token = response.data.token;
       if (token) {
         api.defaults.headers.common["Authorization"] = "Bearer " + token;
-        setUser({ ...response.data, token });
+        const userData = { ...response.data, token };
+        await SaveUsuario(userData);
+        setUser(userData);
 
-        // Salvar dados do usuário no storage local
-        await SaveUsuario({ ...response.data, token });
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "main" }],
+        });
       } else {
         Alert.alert(
           "Login failed",
@@ -36,26 +45,39 @@ function Login(props) {
         );
       }
     } catch (error) {
-      await SaveUsuario({});
-      if (error.response?.data.error) Alert.alert(error.response.data.error);
-      else Alert.alert("An error has occurred. Please try again later.");
-    } finally {
       setLoading(false);
+      if (error.response?.status === 401) {
+        Alert.alert("Invalid email or password");
+      } else if (error.response?.status === 500) {
+        Alert.alert(
+          "Server error",
+          error.response.data.error || "Try again later"
+        );
+      } else {
+        Alert.alert("An unexpected error occurred. Please try again.");
+      }
     }
   }
 
   async function CarregarDados() {
     try {
       const usuario = await LoadUsuario();
-      if (usuario.token) {
+      if (usuario?.token) {
         api.defaults.headers.common["Authorization"] =
           "Bearer " + usuario.token;
-        setUser(usuario);
+        const response = await api.get("/users/profile");
+        if (response.data) {
+          setUser(usuario);
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: "main" }],
+          });
+        }
       } else {
-        setUser(null); // Certifique-se de limpar o estado se o token não for válido
+        setUser(null);
       }
     } catch (error) {
-      setUser(null); // Certifique-se de limpar o estado em caso de erro
+      setUser(null);
     }
   }
 

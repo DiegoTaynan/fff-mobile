@@ -1,37 +1,54 @@
-import React from "react";
-import { Image, ScrollView, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import { ScrollView, TouchableOpacity, View, Image, Text } from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
+import { Modal } from "react-native";
 import { styles } from "./banners.style";
 
-// Mapeamento das imagens locais no formato PNG
-const imageMap = {
-  "assets/banner1.png": require("../../assets/banner1.png"),
-  "assets/banner2.png": require("../../assets/banner2.png"),
-  "assets/banner3.png": require("../../assets/banner3.png"),
-};
-
 function Banners(props) {
-  const getImageSource = (imagePath) => {
-    return imageMap[imagePath] || null; // Retorna null se não encontrar a imagem
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const openModal = (index) => {
+    setSelectedIndex(index);
+    setModalVisible(true);
   };
 
+  const closeModal = () => {
+    setModalVisible(false);
+  };
+
+  const images = props.dados.map((banner) => ({
+    url: banner.imagePath,
+  }));
+
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-        {props.dados.map((banner, index) => {
-          const bannerImage = getImageSource(banner.icons); // Pega a imagem mapeada
-          return (
-            <View key={index} style={styles.banners}>
-              <TouchableOpacity>
-                {bannerImage ? (
-                  <Image style={styles.icone} source={bannerImage} />
-                ) : (
-                  <Text>Imagem não disponível</Text>
-                )}
-              </TouchableOpacity>
-            </View>
-          );
-        })}
+        {props.dados.map((banner, index) => (
+          <View key={banner.id_banner} style={styles.banners}>
+            <TouchableOpacity onPress={() => openModal(index)}>
+              <Image style={styles.icone} source={{ uri: banner.imagePath }} />
+            </TouchableOpacity>
+          </View>
+        ))}
       </ScrollView>
+
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={closeModal}
+      >
+        <ImageViewer
+          imageUrls={images}
+          index={selectedIndex}
+          enableSwipeDown={true}
+          onSwipeDown={closeModal}
+          onCancel={closeModal}
+        />
+        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+          <Text style={styles.closeButtonText}>X</Text>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }

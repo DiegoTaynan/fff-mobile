@@ -1,26 +1,40 @@
-import React from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import React, { useContext } from "react";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 import { styles } from "./menu.style";
 import icons from "../../constants/icons"; // Importando os ícones
 import { useNavigation } from "@react-navigation/native"; // Importando useNavigation
+import { AuthContext } from "../../contexts/auth.js";
 
 function Menu() {
   const navigation = useNavigation(); // Hook para navegação
+  const { user } = useContext(AuthContext); // Verifica se o usuário está logado
 
   const navigateToServices = () => {
     navigation.navigate("services"); // Navega para a tela 'services'
   };
 
   const navigateToAppointments = () => {
+    if (!user) {
+      Alert.alert("Error", "You must be logged in to view appointments.");
+      return;
+    }
     navigation.navigate("Appointments"); // Navega para a tela 'Appointments'
   };
 
   const navigateToTrackers = () => {
-    navigation.navigate("Service Tracker"); // Navega para a tela 'Appointments'
+    if (!user) {
+      Alert.alert("Error", "You must be logged in to view the service tracker.");
+      return;
+    }
+    navigation.navigate("Service Tracker"); // Navega para a tela 'Service Tracker'
   };
 
   const navigateToHistory = () => {
-    navigation.navigate("History"); // Navega para a tela 'Appointments'
+    if (!user) {
+      Alert.alert("Error", "You must be logged in to view the history.");
+      return;
+    }
+    navigation.navigate("History"); // Navega para a tela 'History'
   };
 
   return (

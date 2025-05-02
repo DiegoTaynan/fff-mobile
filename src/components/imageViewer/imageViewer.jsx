@@ -1,63 +1,24 @@
-import React, { useState, useEffect } from "react";
-import { Modal, View, Image, Text, TouchableOpacity } from "react-native";
+import React from "react";
+import { Modal, TouchableOpacity, Text } from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
 import { styles } from "./imageViewer.style.js";
 
-function ImageViewer({ images, onClose }) {
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {}, [images]);
-
-  const handleNext = () => {
-    if (currentIndex < images.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1);
-    }
-  };
+function CustomImageViewer({ images, onClose }) {
+  const formattedImages = images.map((image) => ({ url: image }));
 
   return (
     <Modal visible={true} transparent={true} animationType="slide">
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-          <Text style={styles.closeText}>X</Text>
-        </TouchableOpacity>
-        {images.length > 0 ? (
-          <>
-            <Image
-              source={{ uri: images[currentIndex] }}
-              style={styles.image}
-              onError={(error) =>
-                console.error(
-                  "Erro ao carregar imagem:",
-                  error.nativeEvent.error
-                )
-              }
-            />
-            <View style={styles.navigation}>
-              <TouchableOpacity
-                onPress={handlePrevious}
-                disabled={currentIndex === 0}
-              >
-                <Text style={styles.navText}>{"<"}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleNext}
-                disabled={currentIndex === images.length - 1}
-              >
-                <Text style={styles.navText}>{">"}</Text>
-              </TouchableOpacity>
-            </View>
-          </>
-        ) : (
-          <Text style={styles.noImageText}>Nenhuma imagem disponível</Text>
-        )}
-      </View>
+      <ImageViewer
+        imageUrls={formattedImages}
+        enableSwipeDown={true}
+        onSwipeDown={onClose}
+        onCancel={onClose}
+      />
+      <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+        <Text style={styles.closeText}>X</Text>
+      </TouchableOpacity>
     </Modal>
   );
 }
 
-export default ImageViewer;
+export default CustomImageViewer;

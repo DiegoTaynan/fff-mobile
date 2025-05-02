@@ -1,5 +1,7 @@
-import { Image } from "react-native";
+import { Image, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/auth.js";
 import icons from "../../constants/icons.js";
 
 import Home from "../home/home.jsx";
@@ -9,6 +11,12 @@ import AbaProfile from "../abaprofile/abaprofile.jsx";
 const Tab = createBottomTabNavigator();
 
 function Main() {
+  const { loadingAuth } = useContext(AuthContext);
+
+  if (loadingAuth) {
+    return <Text>Loading...</Text>; // Exibe um indicador de carregamento enquanto o estado de autenticação é carregado
+  }
+
   return (
     <Tab.Navigator>
       <Tab.Screen
