@@ -21,60 +21,35 @@ export const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.8)",
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  modalContent: {
-    width: "90%",
-    height: "70%",
     justifyContent: "center",
     alignItems: "center",
   },
   modalImage: {
-    width: "100%",
-    height: "100%",
-    resizeMode: "contain",
+    width: "90%",
+    height: "80%",
   },
   closeButton: {
-    position: "absolute", // Torna o botão posicionado de forma absoluta
-    bottom: 20, // Ajusta a distância do botão em relação à parte inferior
-    alignSelf: "center", // Centraliza horizontalmente
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#fff",
-    borderRadius: 5,
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    padding: 10,
+    borderRadius: 50,
   },
   closeButtonText: {
-    color: "#000",
+    color: "black",
+    fontSize: 18,
     fontWeight: "bold",
   },
-  navButtonLeft: {
-    position: "absolute",
-    left: 10,
-    top: "50%",
-    transform: [{ translateY: -20 }],
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    borderRadius: 20,
-    padding: 10,
-    zIndex: 10, // Garante que o botão fique acima de outros elementos
+  modalScrollContent: {
+    flexGrow: 1, // Garante que o conteúdo ocupe todo o espaço disponível
+    justifyContent: "center",
+    alignItems: "center",
   },
-  navButtonRight: {
-    position: "absolute",
-    right: 10,
-    top: "50%",
-    transform: [{ translateY: -20 }],
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    borderRadius: 20,
-    padding: 10,
-    zIndex: 10, // Garante que o botão fique acima de outros elementos
-  },
-  navButtonText: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#000",
+  zoomableContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

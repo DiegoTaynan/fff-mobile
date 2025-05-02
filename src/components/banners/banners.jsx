@@ -1,20 +1,15 @@
 import React, { useState } from "react";
-import {
-  ScrollView,
-  TouchableOpacity,
-  View,
-  Modal,
-  Image,
-  Text,
-} from "react-native";
+import { ScrollView, TouchableOpacity, View, Image, Text } from "react-native";
+import ImageViewer from "react-native-image-zoom-viewer";
+import { Modal } from "react-native";
 import { styles } from "./banners.style";
 
 function Banners(props) {
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedBannerIndex, setSelectedBannerIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
   const openModal = (index) => {
-    setSelectedBannerIndex(index);
+    setSelectedIndex(index);
     setModalVisible(true);
   };
 
@@ -22,18 +17,12 @@ function Banners(props) {
     setModalVisible(false);
   };
 
-  const nextBanner = () => {
-    setSelectedBannerIndex((prevIndex) => (prevIndex + 1) % props.dados.length);
-  };
-
-  const prevBanner = () => {
-    setSelectedBannerIndex(
-      (prevIndex) => (prevIndex - 1 + props.dados.length) % props.dados.length
-    );
-  };
+  const images = props.dados.map((banner) => ({
+    url: banner.imagePath,
+  }));
 
   return (
-    <View>
+    <View style={styles.container}>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         {props.dados.map((banner, index) => (
           <View key={banner.id_banner} style={styles.banners}>
@@ -44,28 +33,22 @@ function Banners(props) {
         ))}
       </ScrollView>
 
-      {modalVisible && (
-        <Modal visible={modalVisible} transparent={true}>
-          <View style={styles.modalContainer}>
-            <TouchableOpacity style={styles.navButtonLeft} onPress={prevBanner}>
-              <Text style={styles.navButtonText}>{"<"}</Text>
-            </TouchableOpacity>
-            <Image
-              style={styles.modalImage}
-              source={{ uri: props.dados[selectedBannerIndex].imagePath }}
-            />
-            <TouchableOpacity
-              style={styles.navButtonRight}
-              onPress={nextBanner}
-            >
-              <Text style={styles.navButtonText}>{">"}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </Modal>
-      )}
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        onRequestClose={closeModal}
+      >
+        <ImageViewer
+          imageUrls={images}
+          index={selectedIndex}
+          enableSwipeDown={true}
+          onSwipeDown={closeModal}
+          onCancel={closeModal}
+        />
+        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+          <Text style={styles.closeButtonText}>X</Text>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 }
