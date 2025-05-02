@@ -34,11 +34,27 @@ function Login(props) {
         await SaveUsuario(userData); // Salvar dados do usuário no storage local
         setUser(userData); // Atualizar o estado do usuário
 
-        // Redirecionar para a tela 'main'
-        props.navigation.reset({
-          index: 0,
-          routes: [{ name: "main" }],
-        });
+        // Verifica se há uma tela de redirecionamento
+        const redirectTo = props.route.params?.redirectTo;
+        const redirectParams = props.route.params?.params;
+
+        if (redirectTo) {
+          props.navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: redirectTo,
+                params: redirectParams,
+              },
+            ],
+          });
+        } else {
+          // Redirecionar para a tela 'main' por padrão
+          props.navigation.reset({
+            index: 0,
+            routes: [{ name: "main" }],
+          });
+        }
       } else {
         Alert.alert(
           "Login failed",

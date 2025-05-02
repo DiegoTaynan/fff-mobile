@@ -1,14 +1,16 @@
 import { Alert, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { styles } from "./schedule.style";
 import { Calendar } from "react-native-calendars";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { Picker } from "@react-native-picker/picker";
 import Button from "../../components/button/button.jsx";
 import api from "../../constants/api.js";
 import { FontAwesome } from "@expo/vector-icons"; // Certifique-se de ter o pacote @expo/vector-icons instalado
+import { AuthContext } from "../../contexts/auth.js";
 
 function Schedule(props) {
   const { id_service, service } = props.route.params;
+  const { user, setUser } = useContext(AuthContext); // Verifica se o usuário está logado
 
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
@@ -99,6 +101,26 @@ function Schedule(props) {
   );
 
   async function ClickBooking() {
+    if (!user) {
+      Alert.alert(
+        "Login Required",
+        "You must be logged in to schedule a service.",
+        [
+          {
+            text: "Login",
+            onPress: () => {
+              props.navigation.navigate("login", {
+                redirectTo: "schedule",
+                params: { id_service, service },
+              });
+            },
+          },
+          { text: "Cancel", style: "cancel" },
+        ]
+      );
+      return;
+    }
+
     try {
       const response = await api.post("/appointments", {
         id_service: id_service,
@@ -107,7 +129,12 @@ function Schedule(props) {
         booking_hour: selectedHour,
       });
 
-      if (response.data?.id_appointment) props.navigation.popToTop();
+      if (response.data?.id_appointment) {
+        props.navigation.reset({
+          index: 0,
+          routes: [{ name: "main" }],
+        });
+      }
     } catch (error) {
       if (error.response?.data.error) Alert.alert(error.response.data.error);
       else Alert.alert("An error has occurred. Please try again later.");
