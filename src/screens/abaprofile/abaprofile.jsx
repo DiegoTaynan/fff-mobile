@@ -5,11 +5,11 @@ import { useContext, useEffect, useState } from "react";
 import Button from "../../components/button/button.jsx";
 import { AuthContext } from "../../contexts/auth.js";
 import { useNavigation } from "@react-navigation/native";
-import { RemoveUsuario } from "../../storage/storage.usuario.js"; // Importe a função para remover o usuário do storage
+import { RemoveUsuario } from "../../storage/storage.usuario.js";
 
 function AbaProfile() {
   const navigation = useNavigation();
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser, loadingAuth } = useContext(AuthContext);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -40,87 +40,71 @@ function AbaProfile() {
   }
 
   function Logout() {
-    api.defaults.headers.common["Authorization"] = "";
-    setUser(null); // Limpa o estado do usuário
-    RemoveUsuario(); // Limpa o armazenamento local
+    api.defaults.headers.common["Authorization"] = ""; // Remove o token do cabeçalho
+    RemoveUsuario(); // Remove o usuário do AsyncStorage
+    setUser(null); // Redefine o estado do usuário
     navigation.reset({
       index: 0,
-      routes: [{ name: "main" }], // Redireciona para a tela principal
+      routes: [{ name: "main" }], // Redireciona para a tela 'main'
     });
   }
 
-  async function DeleteProfile() {
-    Alert.alert(
-      "Confirm Deletion",
-      "Are you sure you want to delete your profile? All your data will be permanently deleted.",
-      [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          style: "destructive",
-          onPress: async () => {
-            try {
-              await api.delete("/users/profile");
-              Alert.alert("Profile deleted successfully.");
-              Logout(); // Reutiliza a função de logout para limpar o estado e redirecionar
-            } catch (error) {
-              if (error.response?.data.error)
-                Alert.alert(error.response.data.error);
-              else Alert.alert("An error occurred. Please try again later.");
-            }
-          },
-        },
-      ]
-    );
-  }
-
   useEffect(() => {
-    LoadProfile();
-  }, []);
+    console.log("User context:", user); // Log para verificar o estado do usuário
+    if (user) {
+      LoadProfile();
+    }
+  }, [user]);
+
+  if (loadingAuth) {
+    return <Text>Loading...</Text>; // Exibe um indicador de carregamento enquanto o estado de autenticação é carregado
+  }
 
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.item}>
-        <Text style={styles.title}>Nome</Text>
-        <Text style={styles.text}>{name}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>E-mail</Text>
-        <Text style={styles.text}>{email}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Phone</Text>
-        <Text style={styles.text}>{phone}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Address</Text>
-        <Text style={styles.text}>{address}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Complement</Text>
-        <Text style={styles.text}>{complement}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>City</Text>
-        <Text style={styles.text}>{city}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>State</Text>
-        <Text style={styles.text}>{state}</Text>
-      </View>
-      <View style={styles.item}>
-        <Text style={styles.title}>Zipcode</Text>
-        <Text style={styles.text}>{zipcode}</Text>
-      </View>
-      <View style={styles.item}>
-        <Button text="Disconnect" theme="danger" onPress={Logout} />
-      </View>
-      <View style={styles.item}>
-        <Button text="Delete Profile" onPress={DeleteProfile} />
-      </View>
+      {user ? (
+        <>
+          <View style={styles.item}>
+            <Text style={styles.title}>Name</Text>
+            <Text style={styles.text}>{name}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>E-mail</Text>
+            <Text style={styles.text}>{email}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>Phone</Text>
+            <Text style={styles.text}>{phone}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>Address</Text>
+            <Text style={styles.text}>{address}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>Complement</Text>
+            <Text style={styles.text}>{complement}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>City</Text>
+            <Text style={styles.text}>{city}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>State</Text>
+            <Text style={styles.text}>{state}</Text>
+          </View>
+          <View style={styles.item}>
+            <Text style={styles.title}>Zipcode</Text>
+            <Text style={styles.text}>{zipcode}</Text>
+          </View>
+          <View style={styles.item}>
+            <Button text="Disconnect" theme="danger" onPress={Logout} />
+          </View>
+        </>
+      ) : (
+        <View style={styles.item}>
+          <Button text="Login" onPress={() => navigation.navigate("login")} />
+        </View>
+      )}
     </ScrollView>
   );
 }

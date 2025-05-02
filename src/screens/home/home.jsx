@@ -11,16 +11,18 @@ import { styles } from "./home.style";
 import icons from "../../constants/icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 import TextBox from "../../components/textbox/textbox.jsx";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { banners, menu } from "../../constants/dados.js";
 import Banners from "../../components/banners/banners.jsx";
 import Menu from "../../components/menu/menu.jsx";
 import api from "../../constants/api.js";
+import { AuthContext } from "../../contexts/auth.js";
 
 function Home(props) {
   const [busca, setBusca] = useState("");
   const [banners, setBanner] = useState([]);
   const [usuarioLogado, setUsuarioLogado] = useState("Guest");
+  const { user } = useContext(AuthContext); // Verificar se o usuário está logado
 
   // Função para carregar os banners
   async function LoadBanner() {
@@ -38,6 +40,11 @@ function Home(props) {
 
   // Função para carregar o nome do usuário logado
   async function LoadUser() {
+    if (!user) {
+      setUsuarioLogado("Guest"); // Define como Guest se o usuário não estiver logado
+      return;
+    }
+
     try {
       const response = await api.get("/users/profile");
 
@@ -47,6 +54,7 @@ function Home(props) {
         setUsuarioLogado(firstName);
       }
     } catch (error) {
+      console.error("Error loading user profile:", error);
       if (error.response?.data.error) Alert.alert(error.response.data.error);
       else Alert.alert("An error has occurred. Please try again later.");
     }

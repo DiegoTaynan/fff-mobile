@@ -20,7 +20,7 @@ export async function LoadUsuario() {
 
 export async function RemoveUsuario() {
   try {
-    await AsyncStorage.removeItem("@usuario");
+    await AsyncStorage.removeItem("@usuario"); // Remove o item do armazenamento
   } catch (error) {
     console.error("Erro ao remover usuário:", error);
   }
