@@ -49,13 +49,26 @@ function Registro2(props) {
         await SaveUsuario(response.data);
 
         setUser(response.data);
-      }
 
-      Alert.alert("Account created successfully");
+        Alert.alert("Success", "Account created successfully", [
+          {
+            text: "OK",
+            onPress: () => {
+              // Navigate to main screen after successful account creation
+              props.navigation.reset({
+                index: 0,
+                routes: [{ name: "main" }],
+              });
+            },
+          },
+        ]);
+      }
     } catch (error) {
       setLoading(false);
-      if (error.response?.data.error) Alert.alert(error.response.data.error);
-      else Alert.alert("An error has occurred. Please try again later.");
+      if (error.response?.data.error)
+        Alert.alert("Error", error.response.data.error);
+      else
+        Alert.alert("Error", "An error has occurred. Please try again later.");
     }
   }
 

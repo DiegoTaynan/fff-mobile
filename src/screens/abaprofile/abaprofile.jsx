@@ -18,6 +18,7 @@ function AbaProfile() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipcode, setZipcode] = useState("");
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function LoadProfile() {
     try {
@@ -48,6 +49,63 @@ function AbaProfile() {
         routes: [{ name: "main" }],
       });
     });
+  }
+
+  function confirmDeleteAccount() {
+    Alert.alert(
+      "Delete Account",
+      "Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: deleteAccount,
+          style: "destructive",
+        },
+      ]
+    );
+  }
+
+  async function deleteAccount() {
+    try {
+      setIsDeleting(true);
+      const response = await api.delete("/users/profile");
+
+      if (response.status === 200) {
+        Alert.alert(
+          "Account Deleted",
+          "Your account has been successfully deleted.",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                api.defaults.headers.common["Authorization"] = "";
+                RemoveUsuario().then(() => {
+                  setUser(null);
+                  navigation.reset({
+                    index: 0,
+                    routes: [{ name: "main" }],
+                  });
+                });
+              },
+            },
+          ]
+        );
+      }
+    } catch (error) {
+      setIsDeleting(false);
+      if (error.response?.data.error) {
+        Alert.alert("Error", error.response.data.error);
+      } else {
+        Alert.alert(
+          "Error",
+          "Failed to delete account. Please try again later."
+        );
+      }
+    }
   }
 
   useEffect(() => {
@@ -98,6 +156,14 @@ function AbaProfile() {
           </View>
           <View style={styles.item}>
             <Button text="Disconnect" theme="danger" onPress={Logout} />
+          </View>
+          <View style={styles.item}>
+            <Button
+              text="Delete Account"
+              theme="danger"
+              onPress={confirmDeleteAccount}
+              isLoading={isDeleting}
+            />
           </View>
         </>
       ) : (
