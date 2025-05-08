@@ -1,4 +1,4 @@
-import { Image, Text } from "react-native";
+import { Image, Text, ScrollView } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/auth.js";
@@ -36,10 +36,15 @@ function Main() {
           tabBarShowLabel: false,
           tabBarIcon: ({ focused }) => {
             return (
-              <Image
-                source={icons.home}
-                style={{ width: 25, height: 25, opacity: focused ? 1 : 0.3 }}
-              />
+              <ScrollView
+                contentContainerStyle={{ flexGrow: 1 }}
+                showsVerticalScrollIndicator={false} // Oculta o indicador de rolagem vertical
+              >
+                <Image
+                  source={icons.home}
+                  style={{ width: 25, height: 25, opacity: focused ? 1 : 0.3 }}
+                />
+              </ScrollView>
             );
           },
         }}

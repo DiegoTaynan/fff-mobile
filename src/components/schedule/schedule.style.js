@@ -6,6 +6,7 @@ export const styles = {
     backgroundColor: COLORS.white,
     paddingLeft: 20,
     paddingRight: 20,
+    paddingBottom: 30, // Aumentando o padding inferior para garantir espaço após o botão
     justifyContent: "space-between",
     marginBottom: 20,
   },
@@ -63,5 +64,10 @@ export const styles = {
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
     elevation: 3,
+  },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 20, // Adiciona espaço abaixo do botão
+    width: "100%",
   },
 };

@@ -78,7 +78,10 @@ function Home(props) {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          showsVerticalScrollIndicator={false} // Oculta o indicador de rolagem vertical
+        >
           <View style={styles.headerBar}>
             <Image source={icons.logo} style={styles.logo} />
           </View>

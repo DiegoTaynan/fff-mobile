@@ -149,92 +149,99 @@ function Schedule(props) {
   };
 
   return (
-    <View style={styles.container}>
-      <View>
-        <Calendar
-          theme={styles.theme}
-          onDayPress={(day) => {
-            setSelectedDate(day.dateString);
-          }}
-          markedDates={{
-            [selectedDate]: { selected: true },
-          }}
-          minDate={new Date().toDateString()}
-        />
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
+      <View style={styles.container}>
+        <View>
+          <Calendar
+            theme={styles.theme}
+            onDayPress={(day) => {
+              setSelectedDate(day.dateString);
+            }}
+            markedDates={{
+              [selectedDate]: { selected: true },
+            }}
+            minDate={new Date().toDateString()}
+          />
+
+          <View>
+            <Text style={styles.textHour}>Hour</Text>
+          </View>
+
+          <View>
+            <Picker
+              selectedValue={selectedHour}
+              onValueChange={(itemValue) => {
+                setSelectedHour(itemValue);
+              }}
+            >
+              {availableHours.length > 0 ? (
+                availableHours.map((hour, index) => (
+                  <Picker.Item key={index} label={hour} value={hour} />
+                ))
+              ) : (
+                <Picker.Item label="No available hours" value="" />
+              )}
+            </Picker>
+          </View>
+        </View>
 
         <View>
-          <Text style={styles.textHour}>Hour</Text>
+          <Text style={styles.textService}>Additional Services</Text>
         </View>
 
         <View>
           <Picker
-            selectedValue={selectedHour}
+            selectedValue=""
             onValueChange={(itemValue) => {
-              setSelectedHour(itemValue);
+              if (itemValue) {
+                setSelectedServices([...selectedServices, itemValue]);
+              }
             }}
           >
-            {availableHours.length > 0 ? (
-              availableHours.map((hour, index) => (
-                <Picker.Item key={index} label={hour} value={hour} />
-              ))
-            ) : (
-              <Picker.Item label="No available hours" value="" />
-            )}
+            <Picker.Item label="Select a service" value="" />
+            {filteredServices.map((service, index) => (
+              <Picker.Item
+                key={index}
+                label={service.service}
+                value={service.id_service} // Use ID instead of name
+              />
+            ))}
           </Picker>
         </View>
-      </View>
 
-      <View>
-        <Text style={styles.textService}>Additional Services</Text>
-      </View>
+        <View style={styles.selectedServicesHeader}>
+          <Text style={styles.selectedServicesHeaderText}>
+            Selected Services
+          </Text>
+        </View>
 
-      <View>
-        <Picker
-          selectedValue=""
-          onValueChange={(itemValue) => {
-            if (itemValue) {
-              setSelectedServices([...selectedServices, itemValue]);
-            }
-          }}
+        <ScrollView
+          style={styles.selectedServicesList}
+          nestedScrollEnabled={true}
+          showsVerticalScrollIndicator={false}
         >
-          <Picker.Item label="Select a service" value="" />
-          {filteredServices.map((service, index) => (
-            <Picker.Item
-              key={index}
-              label={service.service}
-              value={service.id_service} // Use ID instead of name
-            />
+          {selectedServices.map((service, index) => (
+            <View key={index} style={styles.selectedServiceItem}>
+              <Text style={styles.selectedServiceText}>
+                {services.find((s) => s.id_service === service)?.service}
+              </Text>
+              {index > 0 && ( // Mostrar botão de remoção apenas para serviços adicionais
+                <TouchableOpacity onPress={() => removeService(service)}>
+                  <FontAwesome name="times-circle" size={24} color="red" />
+                </TouchableOpacity>
+              )}
+            </View>
           ))}
-        </Picker>
-      </View>
+        </ScrollView>
 
-      <View style={styles.selectedServicesHeader}>
-        <Text style={styles.selectedServicesHeaderText}>Selected Services</Text>
+        <View>
+          <Button text="Confirm reservation" onPress={ClickBooking} />
+        </View>
       </View>
-
-      <ScrollView
-        style={styles.selectedServicesList}
-        nestedScrollEnabled={true}
-        showsVerticalScrollIndicator={false}
-      >
-        {selectedServices.map((service, index) => (
-          <View key={index} style={styles.selectedServiceItem}>
-            <Text style={styles.selectedServiceText}>
-              {services.find((s) => s.id_service === service)?.service}
-            </Text>
-            {index > 0 && ( // Mostrar botão de remoção apenas para serviços adicionais
-              <TouchableOpacity onPress={() => removeService(service)}>
-                <FontAwesome name="times-circle" size={24} color="red" />
-              </TouchableOpacity>
-            )}
-          </View>
-        ))}
-      </ScrollView>
-
-      <View>
-        <Button text="Confirm reservation" onPress={ClickBooking} />
-      </View>
-    </View>
+    </ScrollView>
   );
 }
 
