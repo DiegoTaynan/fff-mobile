@@ -23,7 +23,7 @@ export const styles = {
   },
   containerButton: {
     marginTop: 5,
-    maxWidth: "25%",
+    maxWidth: "30%", // Aumentando a largura máxima para acomodar o texto "Schedule"
     alignItems: "center",
     justifyContent: "center",
     flexShrink: 1, // Prevents text overflow by shrinking the container if needed

@@ -62,7 +62,7 @@ function AbaReservations() {
           keyExtractor={(appoint, index) =>
             appoint.id_appointment?.toString() || index.toString()
           }
-          showsVerticalScrollIndicator={false}
+          showsVerticalScrollIndicator={false} // Oculta o indicador de rolagem vertical
           renderItem={({ item }) => {
             return (
               <Appointments

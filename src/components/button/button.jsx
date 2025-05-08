@@ -1,4 +1,4 @@
-import { ActivityIndicator, Alert, Text, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity } from "react-native";
 import { styles } from "./button.style.js";
 
 function Button(props) {
@@ -8,6 +8,7 @@ function Button(props) {
         styles.btn,
         props.theme == "danger" ? styles.danger : styles.primary,
         props.isLoading ? styles.loading : "",
+        props.style, // Permite passagem de estilo personalizado
       ]}
       disabled={props.isLoading}
       onPress={props.onPress}
@@ -15,7 +16,7 @@ function Button(props) {
       {props.isLoading ? (
         <ActivityIndicator color={styles.loadingColor} />
       ) : (
-        <Text style={styles.text}>
+        <Text style={styles.text} numberOfLines={1}>
           {props.text}
         </Text>
       )}

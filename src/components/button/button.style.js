@@ -1,4 +1,4 @@
-import { COLORS, FONT_SIZE, scaleFactor } from "../../constants/theme.js"; // Importando scaleFactor para consistência
+import { COLORS, FONT_SIZE } from "../../constants/theme.js"; // Removendo scaleFactor para evitar problemas de escala
 import { Dimensions } from "react-native";
 
 const { width } = Dimensions.get("window");
@@ -8,7 +8,7 @@ export const styles = {
   btn: {
     width: "100%",
     borderRadius: 6,
-    padding: 12,
+    padding: isSmallScreen ? 8 : 12, // Reduz o padding em telas pequenas
   },
   primary: {
     backgroundColor: COLORS.blue,
@@ -18,12 +18,13 @@ export const styles = {
   },
   text: {
     color: "#fff",
-    fontSize: FONT_SIZE.md * scaleFactor, // Aplicado o scaleFactor para ajustar dinamicamente o tamanho da fonte
+    fontSize: isSmallScreen ? 10 : FONT_SIZE.md, // Tamanho reduzido para telas pequenas
     textAlign: "center",
     display: "flex", // Garante o uso de flexbox
     justifyContent: "center", // Centraliza o texto verticalmente
     alignItems: "center", // Centraliza horizontalmente
     paddingVertical: 0, // Remove qualquer padding vertical
+    flexWrap: "nowrap", // Impede a quebra de texto
   },
   loading: {
     opacity: 0.5,
