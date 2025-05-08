@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   Alert,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import { styles } from "./menu.style";
 import icons from "../../constants/icons"; // Importando os ícones
@@ -15,6 +16,15 @@ import { AuthContext } from "../../contexts/auth.js";
 function Menu() {
   const navigation = useNavigation(); // Hook para navegação
   const { user } = useContext(AuthContext); // Verifica se o usuário está logado
+  const [dimensions, setDimensions] = useState(Dimensions.get("window"));
+
+  // Detectar mudanças na orientação da tela
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener("change", ({ window }) => {
+      setDimensions(window);
+    });
+    return () => subscription?.remove();
+  }, []);
 
   const navigateToServices = () => {
     navigation.navigate("services"); // Navega para a tela 'services'
@@ -56,35 +66,71 @@ function Menu() {
         <View style={styles.row}>
           <TouchableOpacity style={styles.button} onPress={navigateToServices}>
             <View style={styles.iconTextContainer}>
-              <Image source={icons.icon_services} style={styles.icon} />
-              {/* Ícone de Serviços */}
-              <Text style={styles.buttonText}>SERVICES</Text>
+              <Image
+                source={icons.icon_services}
+                style={styles.icon}
+                resizeMode="contain"
+              />
+              <Text
+                style={styles.buttonText}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                SERVICES
+              </Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.button}
-            onPress={navigateToAppointments} // Alterado para navegar para "Appointments"
+            onPress={navigateToAppointments}
           >
             <View style={styles.iconTextContainer}>
-              <Image source={icons.icon_appointment} style={styles.icon} />
-              {/* Ícone de Agendamentos */}
-              <Text style={styles.buttonText}>APPOINTMENTS</Text>
+              <Image
+                source={icons.icon_appointment}
+                style={styles.icon}
+                resizeMode="contain"
+              />
+              <Text
+                style={styles.buttonText}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                APPOINTMENTS
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
         <View style={styles.row}>
           <TouchableOpacity style={styles.button} onPress={navigateToTrackers}>
             <View style={styles.iconTextContainer}>
-              <Image source={icons.icon_servicetracker} style={styles.icon} />
-              {/* Ícone de Rastreador de Serviço */}
-              <Text style={styles.buttonText}>SERVICE TRACKER</Text>
+              <Image
+                source={icons.icon_servicetracker}
+                style={styles.icon}
+                resizeMode="contain"
+              />
+              <Text
+                style={styles.buttonText}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                SERVICE TRACKER
+              </Text>
             </View>
           </TouchableOpacity>
           <TouchableOpacity style={styles.button} onPress={navigateToHistory}>
             <View style={styles.iconTextContainer}>
-              <Image source={icons.icon_history} style={styles.icon} />
-              {/* Ícone de Histórico */}
-              <Text style={styles.buttonText}>HISTORY</Text>
+              <Image
+                source={icons.icon_history}
+                style={styles.icon}
+                resizeMode="contain"
+              />
+              <Text
+                style={styles.buttonText}
+                numberOfLines={1}
+                adjustsFontSizeToFit
+              >
+                HISTORY
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
